@@ -1,12 +1,10 @@
 <?php
 
 namespace Zareismail\Ceremony;
-
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\ServiceProvider;
-use Laravel\Nova\Events\ServingNova;
-use Laravel\Nova\Nova;
-use Zareismail\Ceremony\Http\Middleware\Authorize;
+ 
+use Illuminate\Support\ServiceProvider; 
+use Illuminate\Support\Facades\Gate;
+use Laravel\Nova\Nova as LaravelNova; 
 
 class ToolServiceProvider extends ServiceProvider
 {
@@ -16,41 +14,32 @@ class ToolServiceProvider extends ServiceProvider
      * @return void
      */
     public function boot()
-    {
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'ceremony');
+    { 
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations'); 
+        $this->configurePolicies();
 
-        $this->app->booted(function () {
-            $this->routes();
-        });
-
-        Nova::serving(function (ServingNova $event) {
-            //
-        });
+        LaravelNova::serving([$this, 'servingNova']);
     }
 
     /**
-     * Register the tool's routes.
-     *
+     * Configure the model policies.
+     *  
      * @return void
      */
-    protected function routes()
+    public function configurePolicies()
     {
-        if ($this->app->routesAreCached()) {
-            return;
-        }
-
-        Route::middleware(['nova', Authorize::class])
-                ->prefix('nova-vendor/ceremony')
-                ->group(__DIR__.'/../routes/api.php');
+        Gate::policy(Ceremony::class, Policies\Ceremony::class);
     }
 
     /**
-     * Register any application services.
-     *
+     * Handles `servingNova` event.
+     * 
      * @return void
      */
-    public function register()
-    {
-        //
-    }
+    public function servingNova()
+    { 
+        LaravelNova::resources([
+            Nova\Ceremony::class,
+        ]);
+    } 
 }
