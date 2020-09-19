@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use Ceremony\Helpers\Status;
+use Zareismail\Ceremony\Helpers\Helper;
 
 class CreateCeremoniesTable extends Migration
 {
@@ -14,7 +14,7 @@ class CreateCeremoniesTable extends Migration
      */
     public function up()
     {
-        Schema::create('ceremonies', function (Blueprint $table) {
+        Schema::create(Helper::table('ceremonies'), function (Blueprint $table) {
             $table->id();
             $table->naming();
             $table->softDeletes();
@@ -29,6 +29,6 @@ class CreateCeremoniesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ceremonies');
+        Schema::dropIfExists(Helper::table('ceremonies'));
     }
 }
