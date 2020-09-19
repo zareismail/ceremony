@@ -29,6 +29,7 @@ class ToolServiceProvider extends ServiceProvider
     public function configurePolicies()
     {
         Gate::policy(Ceremony::class, Policies\Ceremony::class);
+        Gate::policy(Building::class, Policies\Building::class);
     }
 
     /**
@@ -40,6 +41,7 @@ class ToolServiceProvider extends ServiceProvider
     { 
         LaravelNova::resources([
             Nova\Ceremony::class,
+            Nova\Building::class,
         ]);
     } 
 }
